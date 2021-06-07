@@ -1,0 +1,29 @@
+FROM node:16-alpine@sha256:f372a9ffcec27159dc9623bad29997a1b61eafbb145dbf4f7a64568be2f59b99 as BUILD
+WORKDIR /app
+
+COPY package*.json .
+COPY yarn.lock .
+RUN yarn install --frozen-lockfile
+
+COPY . .
+RUN yarn build
+
+
+FROM node:16-alpine@sha256:f372a9ffcec27159dc9623bad29997a1b61eafbb145dbf4f7a64568be2f59b99
+RUN apk add dumb-init
+# Can cause problems
+ENV NODE_ENV=production
+
+WORKDIR /app
+
+COPY --chown=node:node package*.json .
+COPY --chown=node:node yarn.lock .
+RUN  yarn install --prod --frozen-lockfile
+
+COPY --chown=node:node --from=build /app/dist /app/dist/
+COPY --chown=node:node . .
+
+RUN chown node:node -R /app
+
+USER node
+CMD ["dumb-init", "node", "dist/main"]

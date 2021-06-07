@@ -1,0 +1,43 @@
+.Hr {
+  border: 0;
+  border-top: 1px solid #dce0e0;
+}
+
+.List {
+  display: flex;
+  flex-wrap: nowrap;
+  margin: 2em 0;
+}
+
+.Title {
+  flex: 1 1 25%;
+}
+
+.Content {
+  flex: 1 1 75%;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.ListItem {
+  flex: 0 0 50%;
+  margin-bottom: 16px;
+}
+
+.ListItem > i {
+  width: 35px;
+}
+
+@media (max-width: 743px) {
+  .Title {
+    flex: 1 1 33%;
+  }
+
+  .Content {
+    flex: 1 1 67%;
+  }
+
+  .ListItem {
+    flex: 0 0 100%;
+  }
+}

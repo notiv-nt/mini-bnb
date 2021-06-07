@@ -1,0 +1,8 @@
+{
+  "eslint.workingDirectories": [
+    { "directory": "vue", "changeProcessCWD": true },
+    { "directory": "react", "changeProcessCWD": true },
+    { "directory": "server", "changeProcessCWD": true }
+    { "directory": "vue-nuxt2", "changeProcessCWD": true }
+  ]
+}

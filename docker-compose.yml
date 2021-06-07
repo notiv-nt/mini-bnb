@@ -1,0 +1,70 @@
+version: '3.8'
+
+services:
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    ports:
+      - 8000:80
+
+  storage:
+    build:
+      context: ./storage
+      dockerfile: Dockerfile
+    ports:
+      - 8001:80
+    volumes:
+      - ./storage/images:/usr/share/nginx/html/images:ro
+
+  vue-nuxt2:
+    build:
+      context: ./vue-nuxt2
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - 8080:8080
+    volumes:
+      - ./vue-nuxt2:/app
+      - /app/node_modules
+    environment:
+      - API_ADDRESS=http://api:3000
+
+  api:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - 3000:3000
+    volumes:
+      - ./server:/app
+      - /app/node_modules
+    environment:
+      - SERVER_PORT=3000
+      - STORAGE_URL=/storage
+      - SESSION_SECRET=t2I6dmE1ahUV9uOdS7
+
+      # db
+      - TYPEORM_CONNECTION=postgres
+      - TYPEORM_URL=postgres://postgres:iExU1k9XD1BnWmKUa@postgres:5432/mini-bnb
+
+      - REDIS_URL=redis:6379
+
+  redis:
+    image: redis:alpine
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:alpine
+    restart: unless-stopped
+    environment:
+      - POSTGRES_PASSWORD=iExU1k9XD1BnWmKUa
+      - POSTGRES_DB=mini-bnb
+    # ports:
+    #   - 5432:5432
+    volumes:
+      - postgres-data:/var/lib/postgresql/data/
+
+volumes:
+  postgres-data:

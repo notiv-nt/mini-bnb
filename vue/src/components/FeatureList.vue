@@ -1,0 +1,76 @@
+<template>
+  <div>
+    <hr />
+
+    <div class="list">
+      <div class="title">
+        <strong>{{ title }}</strong>
+      </div>
+
+      <div class="content">
+        <div class="list-item" v-for="item in items" :key="item.title">
+          <slot v-bind="item"></slot>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script lang="ts">
+export default {
+  props: {
+    title: {
+      type: String,
+    },
+
+    items: {
+      type: Array,
+    },
+  },
+};
+</script>
+
+<style lang="scss" scoped>
+hr {
+  border: 0;
+  border-top: 1px solid #dce0e0;
+}
+.list {
+  display: flex;
+  flex-wrap: nowrap;
+  margin: 2em 0;
+}
+
+.title {
+  flex: 1 1 25%;
+}
+
+.content {
+  flex: 1 1 75%;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.list-item {
+  flex: 0 0 50%;
+  margin-bottom: 16px;
+}
+
+.list-item /deep/ > i {
+  width: 35px;
+}
+
+@media (max-width: 743px) {
+  .title {
+    flex: 1 1 33%;
+  }
+
+  .content {
+    flex: 1 1 67%;
+  }
+
+  .list-item {
+    flex: 0 0 100%;
+  }
+}
+</style>

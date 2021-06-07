@@ -1,0 +1,30 @@
+FROM node:14-alpine@sha256:f07ead757c93bc5e9e79978075217851d45a5d8e5c48eaf823e7f12d9bbc1d3c as BUILD
+WORKDIR /app
+
+COPY package*.json .
+COPY yarn.lock .
+RUN yarn install --frozen-lockfile
+
+COPY . .
+RUN yarn build
+
+
+FROM node:14-alpine@sha256:f07ead757c93bc5e9e79978075217851d45a5d8e5c48eaf823e7f12d9bbc1d3c
+# Can cause problems
+ENV NODE_ENV=production
+
+WORKDIR /app
+
+COPY --chown=node:node package*.json .
+COPY --chown=node:node yarn.lock .
+RUN  yarn install --prod --frozen-lockfile
+
+COPY --chown=node:node --from=build /app/.nuxt /app/.nuxt/
+COPY --chown=node:node . .
+
+RUN chown node:node -R /app
+
+ENV NUXT_HOST=0.0.0.0
+EXPOSE 8080
+CMD ["yarn", "start"]
+# CMD ["./node_modules/.bin/nuxt", "start"]
